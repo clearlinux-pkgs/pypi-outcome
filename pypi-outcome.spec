@@ -4,7 +4,7 @@
 #
 Name     : pypi-outcome
 Version  : 1.2.0
-Release  : 11
+Release  : 12
 URL      : https://files.pythonhosted.org/packages/dd/91/741e1626e89fdc3664169e16300c59eefa4b23540cc6d6c70450f885098f/outcome-1.2.0.tar.gz
 Source0  : https://files.pythonhosted.org/packages/dd/91/741e1626e89fdc3664169e16300c59eefa4b23540cc6d6c70450f885098f/outcome-1.2.0.tar.gz
 Summary  : Capture the outcome of Python function calls.
@@ -15,6 +15,9 @@ Requires: pypi-outcome-python = %{version}-%{release}
 Requires: pypi-outcome-python3 = %{version}-%{release}
 BuildRequires : buildreq-distutils3
 BuildRequires : pypi(attrs)
+# Suppress stripping binaries
+%define __strip /bin/true
+%define debug_package %{nil}
 
 %description
 .. image:: https://img.shields.io/badge/chat-join%20now-blue.svg
@@ -61,15 +64,15 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1656392461
+export SOURCE_DATE_EPOCH=1672296507
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
-export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=auto "
-export FCFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=auto "
-export FFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=auto "
-export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=auto "
+export CFLAGS="$CFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz "
+export FCFLAGS="$FFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz "
+export FFLAGS="$FFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz "
+export CXXFLAGS="$CXXFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz "
 export MAKEFLAGS=%{?_smp_mflags}
 python3 setup.py build
 
@@ -86,8 +89,8 @@ popd
 export MAKEFLAGS=%{?_smp_mflags}
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/pypi-outcome
-cp %{_builddir}/outcome-1.2.0/LICENSE.APACHE2 %{buildroot}/usr/share/package-licenses/pypi-outcome/2b8b815229aa8a61e483fb4ba0588b8b6c491890
-cp %{_builddir}/outcome-1.2.0/LICENSE.MIT %{buildroot}/usr/share/package-licenses/pypi-outcome/f8c5fdc67d412f3435473ee8ce595f06d921ca44
+cp %{_builddir}/outcome-%{version}/LICENSE.APACHE2 %{buildroot}/usr/share/package-licenses/pypi-outcome/2b8b815229aa8a61e483fb4ba0588b8b6c491890 || :
+cp %{_builddir}/outcome-%{version}/LICENSE.MIT %{buildroot}/usr/share/package-licenses/pypi-outcome/f8c5fdc67d412f3435473ee8ce595f06d921ca44 || :
 python3 -tt setup.py build  install --root=%{buildroot}
 echo ----[ mark ]----
 cat %{buildroot}/usr/lib/python3*/site-packages/*/requires.txt || :
